@@ -1,5 +1,12 @@
 
 
+# Composer 安装
+
+    composer require lianyue/baidu-api
+
+
+
+
 
 # 百度 OAuth2 应用
 
