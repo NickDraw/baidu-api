@@ -15,7 +15,7 @@
     },
     "autoload": {
        "psr-4": {
-           "LianYue\\BaiduApi": "src/"
+           "LianYue\\BaiduApi\\": "src/"
        }
    }
 }
