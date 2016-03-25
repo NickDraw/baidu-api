@@ -8,7 +8,7 @@ namespace LianYue\BaiduApi;
 class OAuth2
 {
 
-    const URI_BASE = 'https://openapi.baidu.com';
+    protected $baseUri = 'https://openapi.baidu.com';
 
     protected $clientId;
 
@@ -102,8 +102,8 @@ class OAuth2
             if (empty($params['state']) || $params['state'] !== $this->getState()) {
                 throw new InvalidArgumentException('State parameter error (CSRF)');
             }
-            $request = $this->get('/oauth/2.0/token', array(
-                'grant_type' => 'authorization_code',
+            $request = $this->request('GET', 'oauth/2.0/token', array(
+                'grant_type' => empty($params['authorization_code']) ? 'authorization_code' : $params['authorization_code'],
                 'client_id' => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
                 'code' => $params['code'],
@@ -139,15 +139,15 @@ class OAuth2
 
         $params = array(
 			'client_id' => $this->getClientId(),
-			'response_type'	=> 'code',
 			'state' => $this->getState(),
-		) + $params;
+		) + $params + array(
+            'response_type'	=> 'code',
+        );
 
         if (!empty($params['scope']) && is_array($params['scope'])) {
             $params['scope'] = implode(',', $params['scope']);
         }
-
-        return $this->getUri('/oauth/2.0/authorize', $params);
+        return $this->getUri('oauth/2.0/authorize', $params);
     }
 
     public function getLogoutUri(array $params = array())
@@ -170,7 +170,7 @@ class OAuth2
             }
         }
         unset($params['redirect_uri']);
-        return $this->getUri('/connect/2.0/logout', $params);
+        return $this->getUri('connect/2.0/logout', $params);
     }
 
 
@@ -195,8 +195,9 @@ class OAuth2
         if (!empty($params['scope']) && is_array($params['scope'])) {
             $params['scope'] = implode(',', $params['scope']);
         }
-        $request = $this->get('/oauth/2.0/token', $params);
+        $request = $this->request('GET', 'oauth/2.0/token', $params);
         $this->accessToken = $request->response()->getJson(true);
+        return $this->accessToken;
     }
 
 
@@ -210,7 +211,7 @@ class OAuth2
             'client_id' => $this->getClientId(),
             'client_secret'	=> $this->getClientSecret(),
         ) + $params;
-        $request = $this->get('/oauth/2.0/token', $params);
+        $request = $this->request('GET', 'oauth/2.0/token', $params);
         return $request->response()->getJson(true);
     }
 
@@ -225,26 +226,32 @@ class OAuth2
             'client_id' => $this->getClientId(),
             'client_secret'	=> $this->getClientSecret(),
         ) + $params;
-        $request = $this->get('/oauth/2.0/token', $params);
+        $request = $this->request('GET', 'oauth/2.0/token', $params);
         return $request->response()->getJson(true);
     }
 
 
+    public function getUserInfo()
+    {
+        return $this->api('GET', 'rest/2.0/passport/users/getInfo')->response();
+    }
+
     public function getUri($path, array $params = array())
     {
-        $uri = self::URI_BASE .'/'. ltrim($path, '/');
-
+        if (substr($path, 0, 7) === 'http://' || substr($path, 0, 8) === 'https://') {
+            $uri = $path;
+        } else {
+            $uri = $this->baseUri .'/' . ltrim($path, '/');
+        }
         if ($params) {
             $uri .= '?' . http_build_query($params, null, '&');
         }
-
         return $uri;
     }
 
-
     public function request($method, $path, array $params = array(), array $headers = array(), $body = null, array $options = array())
     {
-        $request = new Request($method, $this->getUri($path, $params), $headers, $body, $options + $this->requestOptions + [CURLOPT_USERAGENT => 'OAuth/2.0 (LianYue; http://lianyue.org, https://github.com/lian-yue/baidu-api)']);
+        $request = new Request($method, $this->getUri($path, $params), $headers, $body, $options + $this->requestOptions + array(CURLOPT_USERAGENT => 'OAuth/2.0 (LianYue; http://lianyue.org, https://github.com/lian-yue/baidu-api)'));
         return  $request->setResponseCallback(function(Response $response) {
 
             $json = $response->getJson();
@@ -265,31 +272,15 @@ class OAuth2
         });
     }
 
-    public function getRest($method, $path, array $params = array(), $body = null) {
+
+    public function api($method, $path, array $params = array(), array $headers = array(), $body = null) {
         if (empty($params['access_token'])) {
             $accessToken = $this->getAccessToken();
             if (empty($accessToken['access_token'])) {
                 throw new InvalidArgumentException('Not configuration access_token');
             }
-            $params += array(
-                'access_token' => $accessToken['access_token'],
-            );
+            $params['access_token'] = $accessToken['access_token'];
         }
-        return $this->request($method, '/rest/2.0/' . ltrim($path), $params, array(), $body);
-    }
-
-    public function get($path, array $params = array())
-    {
-        return $this->request('GET', $path, $params, array(), null);
-    }
-
-    public function post($path, array $params = array(), $body = null)
-    {
-        return $this->request('POST', $path, $params, array(), $body);
-    }
-
-    public function put($path, array $params = array(), $body = null)
-    {
-        return $this->request('PUT', $path, $params, array(), $body);
+        return $this->request($method, $path, $params, $headers, $body);
     }
 }

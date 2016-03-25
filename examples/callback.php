@@ -12,7 +12,11 @@ setcookie('baidu_oauth2_access_token', json_encode($accessToken), time() + 86400
 ?>
 
 <pre>
+访问令牌
 <?=print_r($accessToken)?>
+
+个人信息
+<?=print_r($oauth2->getUserInfo()->getJson())?>
 </pre>
 
 <!DOCTYPE html>

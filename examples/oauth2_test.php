@@ -26,7 +26,7 @@ if (!empty($_REQUEST['path'])) {
     } else {
         $params = array();
     }
-    $response = $oauth2->getRest('GET', $path, $params)->response()->getJson();
+    $response = $oauth2->api('GET', $path, $params)->response()->getJson();
 } else {
     $response = array();
 }
@@ -42,7 +42,7 @@ if (!empty($_REQUEST['path'])) {
     <pre><?=print_r($response)?></pre>
 
     <form>
-        Path: <input type="text" name="path" value="passport/users/getLoggedInUser" />
+        Path: <input type="text" name="path" value="/rest/2.0/passport/users/getLoggedInUser" />
         Params: <input type="text" name="params" value="" style="width: 50em;">
         <input type="submit" value="提交">
     </form>

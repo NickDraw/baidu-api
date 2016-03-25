@@ -127,6 +127,8 @@ class Request
             return $value !== null;
         });
 
+        $body = $this->body;
+
 
         switch ($this->method) {
             case 'HEAD':
@@ -142,7 +144,7 @@ class Request
                         $options[CURLOPT_POSTFIELDS] = (string) $body;
                     } else {
                         $contentType = '';
-                        if (empty($options[CURLOPT_HTTPHEADER])) {
+                        if (!empty($options[CURLOPT_HTTPHEADER])) {
                             foreach($options[CURLOPT_HTTPHEADER] as $header) {
                                 if (strncasecmp('Content-Type', $header, 12) === 0) {
                                     $contentType = substr($header, 13);
@@ -150,18 +152,18 @@ class Request
                                 }
                             }
                         }
-                        if (stripos('multipart/form-data') !== false) {
+                        if (stripos($contentType, 'multipart/form-data') !== false) {
                             $data = [];
                             foreach ($body as $key => $value) {
                                 $data[$key] = $value;
                             }
                             $options[CURLOPT_POSTFIELDS] = $data;
-                        } elseif (stripos('/json') !== false) {
+                        } elseif (stripos($contentType, '/json') !== false) {
                             $options[CURLOPT_POSTFIELDS] = json_encode($body);
                         } else {
                             if (is_object($body) && method_exists($body, '__toString')) {
                                 $body = $body->__toString();
-                            } else {
+                            } elseif ($body) {
                                 $data = [];
                                 foreach ($body as $key => $value) {
                                     $data[$key] = $value;
