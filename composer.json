@@ -7,7 +7,8 @@
     "authors": [
         {
             "name": "Lian Yue",
-            "email": "admin@lianyue.org"
+            "email": "admin@lianyue.org",
+            "homepage": "http://www.lianyue.org/"
         }
     ],
     "require": {
