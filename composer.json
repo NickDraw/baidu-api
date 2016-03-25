@@ -1,7 +1,7 @@
 {
     "name": "lianyue/baidu-api",
     "description": "Baidu api client",
-    "keywords": ["baidu", "oauth2", "oauth", "api", "sdk", "connect", "open", "client", "Map"],
+    "keywords": ["baidu", "oauth2", "oauth", "api", "sdk", "connect", "open", "client", "map"],
     "license": "Apache2",
     "type": "library",
     "authors": [
