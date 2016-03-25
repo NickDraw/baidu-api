@@ -4,7 +4,7 @@
     "keywords": ["baidu", "oauth2", "oauth", "api", "sdk", "connect", "open", "client", "map", "ip"],
     "license": "Apache2",
     "type": "library",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "authors": [
         {
             "name": "Lian Yue",
