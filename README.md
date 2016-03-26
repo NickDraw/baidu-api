@@ -56,7 +56,28 @@ http://developer.baidu.com/wiki/index.php?title=docs/oauth/rest/file_data_apis_l
 
 ### Oauth2使用方法
 
-**请看演示文档**
+    namespace LianYue\BaiduApi;
+
+    $oauth2 = new OAuth2(CLIENT_ID, CLIENT_KEY);
+    $oauth2->setRedirectUri(CALLBACK_URI);
+    try {
+        $accessToken = $oauth2->getAccessToken();
+
+        // 访问令牌
+        print_r($accessToken);
+
+        // 用户信息
+        print_r($oauth2->getUserInfo()->getJson(true));
+
+
+        // 其他api调用
+        print_r($this->api('GET', '/rest/2.0/passport/users/getInfo')->response()->getJson(false));
+
+    } catch (BaiduApiException $e) {
+        header('Location: ' . $oauth2->getAuthorizeUri(['display' => 'pc']));
+    }
+
+
 
 
 
