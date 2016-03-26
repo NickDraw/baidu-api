@@ -145,7 +145,7 @@ class OAuth2
         );
 
         if (!empty($params['scope']) && is_array($params['scope'])) {
-            $params['scope'] = implode(',', $params['scope']);
+            $params['scope'] = implode(' ', $params['scope']);
         }
         return $this->getUri('oauth/2.0/authorize', $params);
     }
