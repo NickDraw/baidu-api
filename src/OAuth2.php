@@ -103,7 +103,7 @@ class OAuth2
                 throw new InvalidArgumentException('State parameter error (CSRF)');
             }
             $request = $this->request('GET', 'oauth/2.0/token', array(
-                'grant_type' => empty($params['authorization_code']) ? 'authorization_code' : $params['authorization_code'],
+                'grant_type' => empty($params['grant_type']) ? 'authorization_code' : $params['grant_type'],
                 'client_id' => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
                 'code' => $params['code'],

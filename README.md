@@ -24,7 +24,7 @@
 Client Id
     就是你的  **Api Key**
 
-Client Key
+Client Secret
     就是你的  **Secret Key**
 
 
