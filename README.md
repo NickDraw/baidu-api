@@ -58,7 +58,7 @@ http://developer.baidu.com/wiki/index.php?title=docs/oauth/rest/file_data_apis_l
 
     namespace LianYue\BaiduApi;
 
-    $oauth2 = new OAuth2(CLIENT_ID, CLIENT_KEY);
+    $oauth2 = new OAuth2(CLIENT_ID, CLIENT_SELECT);
     $oauth2->setRedirectUri(CALLBACK_URI);
     try {
         // 设置 state

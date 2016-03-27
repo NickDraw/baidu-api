@@ -4,7 +4,7 @@ require __DIR__ . '/config.php';
 
 $state = empty($_COOKIE['baidu_api_state']) ? '' : $_COOKIE['baidu_api_state'];
 
-$oauth2 = new OAuth2(CLIENT_ID, CLIENT_KEY);
+$oauth2 = new OAuth2(CLIENT_ID, CLIENT_SELECT);
 $oauth2->setRedirectUri(URI_BASE . 'callback.php');
 $oauth2->setState($state);
 $accessToken = $oauth2->getAccessToken();
